@@ -1,0 +1,34 @@
+{
+  "name": "@domien-sev/agent-shopify-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shopify translation monitor — daily scans for missing/bad Dutch→French translations",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@domien-sev/agent-sdk": "*",
+    "@domien-sev/directus-sdk": "*",
+    "@domien-sev/shared-types": "*",
+    "@domien-sev/shopify-sdk": "*",
+    "@directus/sdk": "^18.0.0",
+    "@anthropic-ai/sdk": "^0.39.0",
+    "node-cron": "^3.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "@types/node": "^22.0.0",
+    "@types/node-cron": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
