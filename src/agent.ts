@@ -15,12 +15,21 @@ export class ShopifyMonitorAgent extends BaseAgent {
     super(config);
 
     const shop = process.env.SHOPIFY_SHOP;
+    const clientId = process.env.SHOPIFY_CLIENT_ID;
+    const clientSecret = process.env.SHOPIFY_CLIENT_SECRET;
     const accessToken = process.env.SHOPIFY_ACCESS_TOKEN;
-    if (!shop || !accessToken) {
-      throw new Error("Missing required env vars: SHOPIFY_SHOP, SHOPIFY_ACCESS_TOKEN");
+
+    if (!shop) {
+      throw new Error("Missing required env var: SHOPIFY_SHOP");
     }
 
-    this.shopifyClient = new ShopifyAdminClient({ shop, accessToken });
+    if (clientId && clientSecret) {
+      this.shopifyClient = new ShopifyAdminClient({ shop, clientId, clientSecret });
+    } else if (accessToken) {
+      this.shopifyClient = new ShopifyAdminClient({ shop, accessToken });
+    } else {
+      throw new Error("Missing Shopify credentials: need SHOPIFY_CLIENT_ID/SECRET or SHOPIFY_ACCESS_TOKEN");
+    }
 
     const deeplApiKey = process.env.DEEPL_API_KEY;
     if (!deeplApiKey) {
