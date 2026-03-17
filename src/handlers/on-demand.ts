@@ -55,9 +55,9 @@ async function handleProductCheck(
       productGid = `gid://shopify/Product/${query}`;
     } else {
       // Search by handle or title in Directus cache
-      const client = agent.directus.getClient("sev-ai");
+      const client = agent.directus.getClient("sev-ai") as any;
       const products = await client.request(
-        readItems("shopify_products" as any, {
+        readItems("shopify_products", {
           filter: {
             _or: [
               { handle: { _contains: query } },
@@ -66,7 +66,7 @@ async function handleProductCheck(
             ],
           },
           limit: 1,
-        }) as any,
+        }),
       ) as Array<{ shopify_id: string; handle: string; title_nl: string }>;
 
       if (products.length === 0) {
@@ -125,14 +125,14 @@ async function handleReportRequest(
   agent: ShopifyMonitorAgent,
 ): Promise<AgentResponse> {
   try {
-    const client = agent.directus.getClient("sev-ai");
+    const client = agent.directus.getClient("sev-ai") as any;
 
     // Get open issue counts by type
     const openIssues = await client.request(
-      readItems("translation_issues" as any, {
+      readItems("translation_issues", {
         filter: { status: { _eq: "open" } },
         limit: -1,
-      }) as any,
+      }),
     ) as TranslationIssueRecord[];
 
     const missing = openIssues.filter((i) => i.issue_type === "missing").length;
@@ -159,13 +159,13 @@ async function handleReportRequest(
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
     const recentlyResolved = await client.request(
-      readItems("translation_issues" as any, {
+      readItems("translation_issues", {
         filter: {
           status: { _eq: "resolved" },
           date_resolved: { _gte: weekAgo.toISOString() },
         },
         limit: -1,
-      }) as any,
+      }),
     ) as TranslationIssueRecord[];
 
     const lines: string[] = [
@@ -223,14 +223,14 @@ async function handleStatusUpdate(
   }
 
   try {
-    const client = agent.directus.getClient("sev-ai");
+    const client = agent.directus.getClient("sev-ai") as any;
 
     // Verify the issue exists
     const issues = await client.request(
-      readItems("translation_issues" as any, {
+      readItems("translation_issues", {
         filter: { id: { _eq: cleanId } },
         limit: 1,
-      }) as any,
+      }),
     ) as TranslationIssueRecord[];
 
     if (issues.length === 0) {
@@ -245,10 +245,10 @@ async function handleStatusUpdate(
 
     // Update status
     await client.request(
-      updateItem("translation_issues" as any, cleanId, {
+      updateItem("translation_issues", cleanId, {
         status: newStatus,
         date_resolved: newStatus === "resolved" ? new Date().toISOString() : null,
-      }) as any,
+      }),
     );
 
     const verb = newStatus === "resolved" ? "resolved" : "ignored";

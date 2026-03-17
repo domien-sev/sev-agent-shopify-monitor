@@ -120,11 +120,11 @@ export async function storeReportArtifact(
   stats: ScanStats,
 ): Promise<void> {
   try {
-    const client = agent.directus.getClient("sev-ai");
+    const client = agent.directus.getClient("sev-ai") as any;
     const today = new Date().toISOString().split("T")[0];
 
     await client.request(
-      createItem("artifacts" as any, {
+      createItem("artifacts", {
         title: `Translation Scan Report — ${today}`,
         type: "translation-report",
         content: JSON.stringify({
@@ -134,7 +134,7 @@ export async function storeReportArtifact(
         }),
         created_by: "shopify-monitor",
         tags: ["translation", "scan", "auto-generated"],
-      }) as any,
+      }),
     );
 
     console.log("[report] Scan report stored as artifact in Directus");

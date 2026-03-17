@@ -91,14 +91,14 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
   );
 
   // Step 5: Deduplicate against existing open issues in Directus
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   let existingIssues: TranslationIssueRecord[] = [];
   try {
     existingIssues = await client.request(
-      readItems("translation_issues" as any, {
+      readItems("translation_issues", {
         filter: { status: { _eq: "open" } },
         limit: -1,
-      }) as any,
+      }),
     ) as TranslationIssueRecord[];
   } catch (err) {
     console.warn(`[daily-scan] Failed to fetch existing issues: ${err instanceof Error ? err.message : String(err)}`);
@@ -152,19 +152,19 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
         );
         if (existing?.id) {
           await client.request(
-            updateItem("translation_issues" as any, existing.id, {
+            updateItem("translation_issues", existing.id, {
               source_value: record.source_value,
               current_translation: record.current_translation,
               confidence_score: record.confidence_score,
               details: record.details,
               issue_type: record.issue_type,
-            }) as any,
+            }),
           );
           issuesUpdated++;
         }
       } else {
         // Create new issue
-        await client.request(createItem("translation_issues" as any, record) as any);
+        await client.request(createItem("translation_issues", record));
         newIssuesCreated++;
       }
     } catch (err) {
@@ -178,7 +178,7 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
       const issueKey = `${pluginResult.productId ?? "plugin"}:${pluginResult.namespace}.${pluginResult.key}`;
       if (!existingIssueKeys.has(issueKey)) {
         await client.request(
-          createItem("translation_issues" as any, {
+          createItem("translation_issues", {
             shopify_product_id: pluginResult.productId ?? "plugin",
             product_handle: "",
             product_title: "",
@@ -193,7 +193,7 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
             plugin_name: pluginResult.pluginName,
             status: "open",
             date_resolved: null,
-          } as Omit<TranslationIssueRecord, "id" | "date_created" | "date_updated">) as any,
+          } as Omit<TranslationIssueRecord, "id" | "date_created" | "date_updated">),
         );
         newIssuesCreated++;
       }
@@ -262,7 +262,7 @@ async function syncProductCache(
   agent: ShopifyMonitorAgent,
   resources: Array<{ resourceId: string; translatableContent: Array<{ key: string; value: string; locale: string }>; translations: Array<{ key: string; value: string | null; locale: string }> }>,
 ): Promise<void> {
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
 
   for (const resource of resources) {
     const shopifyId = resource.resourceId.split("/").pop() ?? resource.resourceId;
@@ -301,16 +301,16 @@ async function syncProductCache(
     try {
       // Check if product already exists in cache
       const existing = await client.request(
-        readItems("shopify_products" as any, {
+        readItems("shopify_products", {
           filter: { shopify_id: { _eq: shopifyId } },
           limit: 1,
-        }) as any,
+        }),
       ) as ShopifyProductRecord[];
 
       if (existing[0]?.id) {
-        await client.request(updateItem("shopify_products" as any, existing[0].id, record) as any);
+        await client.request(updateItem("shopify_products", existing[0].id, record));
       } else {
-        await client.request(createItem("shopify_products" as any, record) as any);
+        await client.request(createItem("shopify_products", record));
       }
     } catch (err) {
       // Non-critical — log and continue
