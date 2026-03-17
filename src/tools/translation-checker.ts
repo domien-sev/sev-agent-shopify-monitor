@@ -40,6 +40,9 @@ export function checkTranslations(
       // Skip empty source values — nothing to translate
       if (!sourceValue || !sourceValue.trim()) continue;
 
+      // Skip fields that don't need translation (URL slugs, etc.)
+      if (content.key === "handle") continue;
+
       // Skip non-translatable content (pure numbers, URLs, etc.)
       if (isNonTranslatable(sourceValue)) continue;
 
