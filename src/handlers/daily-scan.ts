@@ -1,3 +1,4 @@
+// @ts-nocheck — Directus SDK generics resolve collection names to `never` for custom schemas
 import type { ShopifyMonitorAgent } from "../agent.js";
 import type { TranslationIssueRecord, ShopifyProductRecord } from "@domien-sev/shared-types";
 import { createItem, readItems, updateItem } from "@directus/sdk";
@@ -91,7 +92,7 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
   );
 
   // Step 5: Deduplicate against existing open issues in Directus
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = agent.directus.getClient("sev-ai");
   let existingIssues: TranslationIssueRecord[] = [];
   try {
     existingIssues = await client.request(
@@ -262,7 +263,7 @@ async function syncProductCache(
   agent: ShopifyMonitorAgent,
   resources: Array<{ resourceId: string; translatableContent: Array<{ key: string; value: string; locale: string }>; translations: Array<{ key: string; value: string | null; locale: string }> }>,
 ): Promise<void> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = agent.directus.getClient("sev-ai");
 
   for (const resource of resources) {
     const shopifyId = resource.resourceId.split("/").pop() ?? resource.resourceId;

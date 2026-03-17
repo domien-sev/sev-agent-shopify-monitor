@@ -1,3 +1,4 @@
+// @ts-nocheck — Directus SDK generics resolve collection names to `never` for custom schemas
 import type { TranslationIssueRecord } from "@domien-sev/shared-types";
 import type { ShopifyMonitorAgent } from "../agent.js";
 import type { ScanStats } from "./daily-scan.js";
@@ -120,7 +121,7 @@ export async function storeReportArtifact(
   stats: ScanStats,
 ): Promise<void> {
   try {
-    const client = agent.directus.getClient("sev-ai") as any;
+    const client = agent.directus.getClient("sev-ai");
     const today = new Date().toISOString().split("T")[0];
 
     await client.request(
