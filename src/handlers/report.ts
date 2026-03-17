@@ -123,9 +123,8 @@ export async function storeReportArtifact(
     const client = agent.directus.getClient("sev-ai");
     const today = new Date().toISOString().split("T")[0];
 
-    // @ts-ignore — @directus/sdk createItem generic resolves to never for custom schemas
     await client.request(
-      createItem("artifacts", {
+      createItem("artifacts" as any, {
         title: `Translation Scan Report — ${today}`,
         type: "translation-report",
         content: JSON.stringify({

@@ -57,7 +57,7 @@ async function handleProductCheck(
       // Search by handle or title in Directus cache
       const client = agent.directus.getClient("sev-ai");
       const products = await client.request(
-        readItems("shopify_products", {
+        readItems("shopify_products" as any, {
           filter: {
             _or: [
               { handle: { _contains: query } },
@@ -129,7 +129,7 @@ async function handleReportRequest(
 
     // Get open issue counts by type
     const openIssues = await client.request(
-      readItems("translation_issues", {
+      readItems("translation_issues" as any, {
         filter: { status: { _eq: "open" } },
         limit: -1,
       }),
@@ -159,7 +159,7 @@ async function handleReportRequest(
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
     const recentlyResolved = await client.request(
-      readItems("translation_issues", {
+      readItems("translation_issues" as any, {
         filter: {
           status: { _eq: "resolved" },
           date_resolved: { _gte: weekAgo.toISOString() },
@@ -227,7 +227,7 @@ async function handleStatusUpdate(
 
     // Verify the issue exists
     const issues = await client.request(
-      readItems("translation_issues", {
+      readItems("translation_issues" as any, {
         filter: { id: { _eq: cleanId } },
         limit: 1,
       }),
@@ -245,7 +245,7 @@ async function handleStatusUpdate(
 
     // Update status
     await client.request(
-      updateItem("translation_issues", cleanId, {
+      updateItem("translation_issues" as any, cleanId, {
         status: newStatus,
         date_resolved: newStatus === "resolved" ? new Date().toISOString() : null,
       }),

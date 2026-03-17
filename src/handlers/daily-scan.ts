@@ -95,7 +95,7 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
   let existingIssues: TranslationIssueRecord[] = [];
   try {
     existingIssues = await client.request(
-      readItems("translation_issues", {
+      readItems("translation_issues" as any, {
         filter: { status: { _eq: "open" } },
         limit: -1,
       }),
@@ -152,7 +152,7 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
         );
         if (existing?.id) {
           await client.request(
-            updateItem("translation_issues", existing.id, {
+            updateItem("translation_issues" as any, existing.id, {
               source_value: record.source_value,
               current_translation: record.current_translation,
               confidence_score: record.confidence_score,
@@ -164,7 +164,7 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
         }
       } else {
         // Create new issue
-        await client.request(createItem("translation_issues", record));
+        await client.request(createItem("translation_issues" as any, record));
         newIssuesCreated++;
       }
     } catch (err) {
@@ -178,7 +178,7 @@ export async function handleDailyScan(agent: ShopifyMonitorAgent): Promise<ScanS
       const issueKey = `${pluginResult.productId ?? "plugin"}:${pluginResult.namespace}.${pluginResult.key}`;
       if (!existingIssueKeys.has(issueKey)) {
         await client.request(
-          createItem("translation_issues", {
+          createItem("translation_issues" as any, {
             shopify_product_id: pluginResult.productId ?? "plugin",
             product_handle: "",
             product_title: "",
@@ -301,16 +301,16 @@ async function syncProductCache(
     try {
       // Check if product already exists in cache
       const existing = await client.request(
-        readItems("shopify_products", {
+        readItems("shopify_products" as any, {
           filter: { shopify_id: { _eq: shopifyId } },
           limit: 1,
         }),
       ) as ShopifyProductRecord[];
 
       if (existing[0]?.id) {
-        await client.request(updateItem("shopify_products", existing[0].id, record));
+        await client.request(updateItem("shopify_products" as any, existing[0].id, record));
       } else {
-        await client.request(createItem("shopify_products", record));
+        await client.request(createItem("shopify_products" as any, record));
       }
     } catch (err) {
       // Non-critical — log and continue
