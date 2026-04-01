@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Shopify translation monitor — daily scans for missing/bad Dutch→French translations",
+  "description": "Shopify translation monitor \u2014 daily scans for missing/bad Dutch\u2192French translations",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -13,13 +13,15 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@directus/sdk": "^18.0.0",
     "@domien-sev/agent-sdk": "*",
     "@domien-sev/directus-sdk": "*",
     "@domien-sev/shared-types": "*",
     "@domien-sev/shopify-sdk": "*",
-    "@directus/sdk": "^18.0.0",
-    "@anthropic-ai/sdk": "^0.39.0",
-    "node-cron": "^3.0.0"
+    "dotenv": "^8.2.0",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "tsx": "^4.19.0",

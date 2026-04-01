@@ -9,6 +9,11 @@ let scheduledTask: cron.ScheduledTask | null = null;
  * Uses SCAN_CRON env var, defaults to "0 6 * * *" (6 AM daily).
  */
 export function initScheduler(agent: ShopifyMonitorAgent): void {
+  if (process.env.PAPERCLIP_SCHEDULING_ENABLED === "true") {
+    console.log("[scheduler] Paperclip scheduling enabled — skipping node-cron (heartbeats are primary)");
+    return;
+  }
+
   const cronExpression = process.env.SCAN_CRON ?? "0 6 * * *";
 
   if (!cron.validate(cronExpression)) {
